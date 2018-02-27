@@ -4,7 +4,7 @@
   "description": "Sync from mapfilter-desktop to a server",
   "main": "index.js",
   "scripts": {
-    "test": "node tests/*.js"
+    "test": "tape tests/*.js | tap-spec"
   },
   "repository": {
     "type": "git",
@@ -22,12 +22,18 @@
   },
   "homepage": "https://github.com/digidem/mapfilter-sync-server#readme",
   "dependencies": {
+    "blob-store-replication-stream": "^1.0.0",
     "level": "^3.0.0",
     "mkdirp": "^0.5.1",
     "os-tmpdir": "^1.0.2",
     "osm-p2p": "^2.0.0",
     "osm-p2p-observations": "^2.1.0",
-    "p2p-file-store": "0.0.5",
+    "rimraf": "^2.6.2",
+    "safe-fs-blob-store": "0.0.2",
+    "tap-spec": "^4.1.1",
     "tape": "^4.9.0"
+  },
+  "devDependencies": {
+    "collect-stream": "^1.2.1"
   }
 }

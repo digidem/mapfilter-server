@@ -2,8 +2,9 @@ var mkdirp = require('mkdirp')
 var level = require('level')
 var osmdb = require('osm-p2p')
 var osmobs = require('osm-p2p-observations')
-var MediaStore = require('p2p-file-store')
+var MediaStore = require('safe-fs-blob-store')
 var path = require('path')
+var createMediaReplicationStream = require('blob-store-replication-stream')
 
 module.exports = Store
 
@@ -22,7 +23,7 @@ Store.prototype.createOsmReplicationStream = function () {
 }
 
 Store.prototype.createMediaReplicationStream = function () {
-  return this.media.replicateStream()
+  return createMediaReplicationStream(this.media)
 }
 
 Store.prototype.replicate = function (r1, r2, cb) {
@@ -35,4 +36,8 @@ Store.prototype.replicate = function (r1, r2, cb) {
   function onDone () {
     if (!--pending) cb()
   }
+}
+
+Store.prototype.close = function (cb) {
+  this.osm.close(cb)
 }
