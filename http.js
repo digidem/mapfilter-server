@@ -1,4 +1,6 @@
 var through = require('through2')
+var ndjson = require('ndjson')
+var xtend = require('xtend')
 var router = require('routes')()
 var pump = require('pump')
 
@@ -14,14 +16,9 @@ router.addRoute('GET /obs/links/:id', function (req, res, m) {
     }
   }
 })
+
 router.addRoute('GET /obs/list', function (req, res, m) {
-  pump(m.db.osm.log.createReadStream(), through.obj(write), res, done)
-  function write (row, enc, next) {
-    var v = row.value && row.value.v || {}
-    if (v.type === 'observation') {
-      next(null, JSON.stringify(xtend({ id: row.value.k }, v)) + '\n')
-    } else next()
-  }
+  pump(m.db.observationStream(), ndjson.stringify(), res, done)
   function done (err) {
     if (err) {
       res.statusCode = 500
