@@ -1,14 +1,14 @@
 {
-  "name": "mapfilter-sync-server",
+  "name": "mapfilter-server",
   "version": "1.0.0",
-  "description": "Sync from mapfilter-desktop to a server",
+  "description": "Server for viewing mapfilter data over HTTP and replication via websockets.",
   "main": "index.js",
   "scripts": {
     "test": "tape tests/*.js | tap-spec"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/digidem/mapfilter-sync-server.git"
+    "url": "git+https://github.com/digidem/mapfilter-server.git"
   },
   "keywords": [
     "mapfilter",
@@ -18,9 +18,9 @@
   "author": "Karissa McKelvey",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/digidem/mapfilter-sync-server/issues"
+    "url": "https://github.com/digidem/mapfilter-server/issues"
   },
-  "homepage": "https://github.com/digidem/mapfilter-sync-server#readme",
+  "homepage": "https://github.com/digidem/mapfilter-server#readme",
   "dependencies": {
     "blob-store-replication-stream": "^1.0.0",
     "end-of-stream": "^1.4.1",
