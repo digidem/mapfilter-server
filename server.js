@@ -2,7 +2,7 @@ var http = require('http')
 var eos = require('end-of-stream')
 var wsock = require('websocket-stream')
 var mapfilterSync = require('.')
-var Store = require('./store')
+var Store = require('mapfilter-db')
 
 var http = require('http')
 var ospath = require('ospath')
