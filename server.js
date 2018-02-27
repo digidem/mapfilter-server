@@ -1,8 +1,8 @@
 var http = require('http')
 var eos = require('end-of-stream')
 var wsock = require('websocket-stream')
-var mapfilterSync = require('.')
 var Store = require('mapfilter-db')
+var router = require('./http')
 
 var http = require('http')
 var ospath = require('ospath')
@@ -14,9 +14,7 @@ module.exports = function (osmdir) {
     console.log('using default osmdir', osmdir)
   }
   var store = Store(osmdir)
-  var server = http.createServer(function (req, res) {
-   //nothing to see here yet
-  })
+  var server = http.createServer(router(store))
   server.store = store
   var replicating = false
 
