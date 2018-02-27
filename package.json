@@ -25,6 +25,7 @@
     "blob-store-replication-stream": "^1.0.0",
     "end-of-stream": "^1.4.1",
     "level": "^3.0.0",
+    "mapfilter-db": "^1.0.1",
     "mkdirp": "^0.5.1",
     "os-tmpdir": "^1.0.2",
     "osm-p2p": "^2.0.0",
