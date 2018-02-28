@@ -18,7 +18,8 @@ rimraf.sync(tmpdir)
 rimraf.sync(tmpdir2)
 
 var EXAMPLES = [
-  JSON.parse(fs.readFileSync(path.join(__dirname, 'observations', 'observation_0.json')).toString())
+  JSON.parse(fs.readFileSync(path.join(__dirname, 'observations', 'observation_0.json')).toString()),
+  JSON.parse(fs.readFileSync(path.join(__dirname, 'observations', 'observation_1.json')).toString())
 ]
 
 var s1 = store(tmpdir)
@@ -32,7 +33,7 @@ getport(function (e, p) {
   })
 })
 
-function cleanup (s1, s2, t) {
+function cleanup (t) {
   s1.close(function () {
     server.close(function () {
       rimraf.sync(tmpdir)
@@ -78,7 +79,7 @@ test.skip('websocket media replication', function (t) {
 test('websocket osm replication', function (t) {
   var id = null
   var node = null
-  s1.osm.create(EXAMPLES[0], done)
+  s1.osm.create(EXAMPLES[0], () => s1.osm.create(EXAMPLES[1], done))
 
   function done (err, _id, _node) {
     t.error(err)
@@ -106,16 +107,18 @@ test('websocket osm replication', function (t) {
   }
 })
 
-test('list observation with http', function (t) {
+test('list observations with http', function (t) {
   needle.get(`http://localhost:${port}/obs/list`, function (error, response) {
     t.error(error)
     t.same(response.statusCode, 200)
     var obs = JSON.parse(response.body.toString())
-    t.same(obs.type, 'observation')
-    t.same(obs.tags.type, 'Feature')
-    t.same(obs.tags.properties, {})
-    t.same(obs.tags.geometry.type, EXAMPLES[0].tags.geometry.type)
-    t.same(obs.tags.geometry.coordinates, EXAMPLES[0].tags.geometry.coordinates)
-    cleanup(s1, server.store, t)
+    t.same(obs.length, 2)
+    for (var i = 0; i < obs.length; obs++) {
+      var o = obs[i]
+      t.same(o.type, 'observation')
+      t.same(o.tags.type, 'Feature')
+      t.same(o.tags.properties, {})
+    }
+    cleanup(t)
   })
 })

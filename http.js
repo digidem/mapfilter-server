@@ -1,11 +1,14 @@
 var through = require('through2')
+var JSONStream = require('JSONStream')
 var ndjson = require('ndjson')
 var xtend = require('xtend')
 var router = require('routes')()
 var pump = require('pump')
 
 router.addRoute('GET /obs/list', function (req, res, m) {
-  pump(m.db.observationStream(), ndjson.stringify(), res, done)
+  if (m.params.stream) parser = ndjson.stringify()
+  else parser = JSONStream.stringify()
+  pump(m.db.observationStream(), parser, res, done)
   function done (err) {
     if (err) {
       res.statusCode = 500
