@@ -79,11 +79,11 @@ test.skip('websocket media replication', function (t) {
 test('websocket osm replication', function (t) {
   var id = null
   var node = null
-  s1.osm.create(EXAMPLES[0], () => s1.osm.create(EXAMPLES[1], done))
+  s1.observationCreate(EXAMPLES[0], () => s1.observationCreate(EXAMPLES[1], done))
 
-  function done (err, _id, _node) {
+  function done (err, _node) {
     t.error(err)
-    id = _id
+    id = _node.value.k
     node = _node
     s1.osm.get(id, function (err, docs) {
       t.error(err)
@@ -116,8 +116,7 @@ test('list observations with http', function (t) {
     for (var i = 0; i < obs.length; obs++) {
       var o = obs[i]
       t.same(o.type, 'observation')
-      t.same(o.tags.type, 'Feature')
-      t.same(o.tags.properties, {})
+      t.same(o.tags, {})
     }
     cleanup(t)
   })

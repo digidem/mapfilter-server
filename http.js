@@ -1,4 +1,3 @@
-var through = require('through2')
 var JSONStream = require('JSONStream')
 var ndjson = require('ndjson')
 var xtend = require('xtend')
