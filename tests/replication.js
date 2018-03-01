@@ -118,6 +118,23 @@ test('list observations with http', function (t) {
       t.same(o.type, 'observation')
       t.same(o.tags, {})
     }
-    cleanup(t)
+    t.end()
+  })
+})
+
+test('create observation with http', function (t) {
+  var observation = {
+    type: 'observation',
+    tags: EXAMPLES[0]
+  }
+  needle.request('post', `http://localhost:${port}/obs/create`, observation, {json: true}, function (error, response) {
+    t.error(error)
+    t.same(response.statusCode, 200)
+    var result = response.body.toString()
+    server.store.osm.get(result, function (err, docs) {
+      t.error(err)
+      t.ok(docs)
+      cleanup(t)
+    })
   })
 })
