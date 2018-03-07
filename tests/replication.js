@@ -43,30 +43,39 @@ function cleanup (t) {
   })
 }
 
-test.skip('websocket media replication', function (t) {
+test('websocket media replication', function (t) {
   var ws = s1.media.createWriteStream('foo.txt')
-  var pending  = 1
-  ws.on('finish', written)
-  ws.on('error', written)
+  ws.on('finish', replicate)
+  ws.on('error', function (err) {
+    t.error(err)
+  })
   ws.write('bar')
   ws.end()
-
-  function written (err) {
-    t.error(err)
-    if (--pending === 0) replicate()
-  }
 
   function replicate () {
     var r1 = s1.createMediaReplicationStream()
     t.ok(true, 'replication started')
 
     var pending = 2
-    var ws = websocket(`ws://localhost:${port}/media`)
-    pump(r1, ws, r1, done)
+    var ws = websocket(`ws://localhost:${port}/media`, {
+      perMessageDeflate: false,
+      binary: true
+    })
+    r1.pipe(ws).pipe(r1)
 
-    function done (err) {
+    r1.on('error', onError)
+    ws.on('error', onError)
+    r1.on('end', onDone)
+    ws.on('end', onDone)
+
+    function onError (err) {
+      pending = Infinity
       t.error(err)
-      if (--pending === 0) {
+    }
+
+    var pending = 2
+    function onDone () {
+      if (!--pending) {
         t.ok(true, 'replication ended')
         t.ok(fs.existsSync(path.join(tmpdir2, 'media', 'foo', 'foo.txt')))
         t.equal(fs.readFileSync(path.join(tmpdir2, 'media', 'foo', 'foo.txt')).toString(), 'bar')

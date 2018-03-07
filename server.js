@@ -10,7 +10,7 @@ var path = require('path')
 
 module.exports = function (osmdir) {
   if (!osmdir) {
-    osmdir = path.join(ospath.data(), 'mapfilter-osm-p2p')
+    osmdir = path.join(ospath.data(), 'mapfilter-osm-p2p-server')
     console.log('using default osmdir', osmdir)
   }
   var store = Store(osmdir)
@@ -27,14 +27,7 @@ module.exports = function (osmdir) {
   return server
 
   function replicateOsm (socket) {
-    replicate(store.createOsmReplicationStream(), socket)
-  }
-
-  function replicateMedia (socket) {
-    replicate(store.createMediaReplicationStream(), socket)
-  }
-
-  function replicate (src, socket) {
+    var src = store.createOsmReplicationStream()
     if (replicating) {
       console.log('NET REPLICATION: already replicating')
       return
@@ -48,17 +41,35 @@ module.exports = function (osmdir) {
     eos(src, onend)
     eos(socket, onend)
     function onend () {
-      if (--pending !== 0) return
-      console.log('NET REPLICATION: done')
-      replicating = false
-      store.osm.ready(function () {
-        console.log('NET REPLICATION: indexes caught up')
-      })
+      if (!--pending) {
+        console.log('NET REPLICATION: done')
+        replicating = false
+        store.osm.ready(function () {
+          console.log('NET REPLICATION: indexes caught up')
+        })
+      }
+    }
+  }
+
+  function replicateMedia (socket) {
+    console.log('MEDIA REPLICATION: starting')
+    var src = store.createMediaReplicationStream()
+    src.on('error', syncErr)
+    socket.on('error', syncErr)
+    src.pipe(socket).pipe(src)
+    src.on('end', onDone)
+    socket.on('end', onDone)
+
+    var pending = 2
+    function onDone () {
+      if (!--pending) {
+        console.log('MEDIA REPLICATION: done')
+      }
     }
   }
 
   function syncErr (err) {
     replicating = false
-    console.log('NET REPLICATION: err', err)
+    console.log('REPLICATION', err)
   }
 }
