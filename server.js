@@ -33,9 +33,11 @@ module.exports = function (osmdir) {
       console.log('NET REPLICATION: already replicating')
       return
     }
-    pump(src, socket, src, function (err) {
+    socket.on('close', function () {
       replicating = false
-      if (err) console.log('Net REPLICATION', err)
+    })
+    pump(src, socket, src, function (err) {
+      if (err) console.log('NET REPLICATION', err)
       else console.log('NET REPLICATION: done')
       store.osm.ready(function () {
         console.log('NET REPLICATION: indexes caught up')
@@ -46,10 +48,12 @@ module.exports = function (osmdir) {
   function replicateMedia (socket) {
     console.log('MEDIA REPLICATION: starting')
     replicating = true
+    socket.on('close', function () {
+      replicating = false
+    })
     var src = store.createMediaReplicationStream()
     pump(src, socket, src, function (err) {
-      replicating = false
-      if (err) console.log('REPLICATION', err)
+      if (err) console.log('MEDIA REPLICATION', err)
       else console.log('MEDIA REPLICATION: done')
     })
   }
