@@ -19,7 +19,7 @@ module.exports = function (osmdir) {
   server.store = store
   var replicating = false
 
-  wsock.createServer({ server: server }, function (stream, request) {
+  wsock.createServer({ server: server , perMessageDeflate: false }, function (stream, request) {
     if (request.url.match(/osm/)) replicateOsm(stream)
     else if (request.url.match(/media/)) replicateMedia(stream)
     else stream.destroy(request.url + ' does not match')
