@@ -38,6 +38,17 @@ router.addRoute('GET /obs/list', function (req, res, m) {
   }
 })
 
+router.addRoute('GET /obs/:id', function (req, res, m) {
+  m.db.osm.get(m.params.id, function (err, result) {
+    if (err) {
+      res.statusCode = 500
+      res.end(err)
+    }
+    res.end(JSON.stringify(Object.values(result)))
+  })
+})
+
+
 module.exports = function (db) {
   return function (req, res) {
     console.log(req.method, req.url)
