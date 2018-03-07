@@ -29,6 +29,7 @@
     "end-of-stream": "^1.4.1",
     "level": "^3.0.0",
     "mapfilter-db": "^1.0.2",
+    "mime": "^2.2.0",
     "mkdirp": "^0.5.1",
     "ndjson": "^1.5.0",
     "os-tmpdir": "^1.0.2",

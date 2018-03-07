@@ -71,7 +71,24 @@ server.listen(port, function () {
       var obs = JSON.parse(response.body.toString())
       var o = obs[0]
       t.same([o.lon, o.lat], EXAMPLES[1].geometry.coordinates)
-      cleanup(t)
+      t.end()
     })
+  })
+
+  test('get media with http', function (t) {
+    var ws = server.store.media.createWriteStream('hello.txt')
+    ws.on('error', function () {
+      t.error(err)
+    })
+    ws.on('finish', function () {
+      needle.get(`http://localhost:${port}/media/hello.txt`, function (error, response) {
+        t.error(error)
+        t.same(response.statusCode, 200)
+        t.same(response.body.toString(), 'world')
+        cleanup(t)
+      })
+    })
+    ws.write('world')
+    ws.end()
   })
 })
