@@ -1,5 +1,8 @@
 # mapfilter-server
 
+[![Build
+Status](https://travis-ci.org/digidem/mapfilter-server.svg?branch=master)](https://travis-ci.org/digidem/mapfilter-server)
+
 Server for viewing mapfilter data over HTTP and replication via websockets.
 
 ## Usage
