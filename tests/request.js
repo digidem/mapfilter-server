@@ -68,7 +68,7 @@ server.listen(port, function () {
     needle.get(`http://localhost:${port}/obs/${id}`, function (error, response) {
       t.error(error)
       t.same(response.statusCode, 200)
-      var obs = JSON.parse(response.body.toString())
+      var obs = response.body
       var o = obs[0]
       t.same([o.lon, o.lat], EXAMPLES[1].geometry.coordinates)
       t.end()
@@ -85,10 +85,20 @@ server.listen(port, function () {
         t.error(error)
         t.same(response.statusCode, 200)
         t.same(response.body.toString(), 'world')
-        cleanup(t)
+        t.end()
       })
     })
     ws.write('world')
     ws.end()
+  })
+
+  test('list media with http', function (t) {
+    needle.get(`http://localhost:${port}/media/list`, function (error, response) {
+      t.error(error)
+      t.same(response.statusCode, 200)
+      var media = response.body
+      t.same(media[0], 'hello.txt')
+      cleanup(t)
+    })
   })
 })

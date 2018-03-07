@@ -40,12 +40,27 @@ router.addRoute('GET /obs/list', function (req, res, m) {
   }
 })
 
+router.addRoute('GET /media/list', function (req, res, m) {
+  var stream = m.db.media._list(function (err, names) {
+    if (err) {
+      res.statusCode = 200
+      res.end(err.toString())
+      return
+    }
+    console.log(names)
+    res.setHeader('content-type', 'application/json')
+    res.statusCode = 200
+    res.end(JSON.stringify(names))
+  })
+})
+
 router.addRoute('GET /obs/:id', function (req, res, m) {
   m.db.osm.get(m.params.id, function (err, result) {
     if (err) {
       res.statusCode = 500
       res.end(err)
     }
+    res.setHeader('content-type', 'application/json')
     res.end(JSON.stringify(values(result)))
   })
 })
@@ -62,7 +77,6 @@ router.addRoute('GET /media/:filename', function (req, res, m) {
   res.setHeader('content-type', mime.getType(m.params.file))
   pump(stream, res)
 })
-
 
 module.exports = function (db) {
   return function (req, res) {

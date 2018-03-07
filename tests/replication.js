@@ -79,7 +79,13 @@ test('websocket media replication', function (t) {
         t.ok(true, 'replication ended')
         t.ok(fs.existsSync(path.join(tmpdir2, 'media', 'foo', 'foo.txt')))
         t.equal(fs.readFileSync(path.join(tmpdir2, 'media', 'foo', 'foo.txt')).toString(), 'bar')
-        t.end()
+        needle.get(`http://localhost:${port}/media/list`, function (error, response) {
+          t.error(error)
+          t.same(response.statusCode, 200)
+          var media = response.body
+          t.same(media[0], 'foo.txt')
+          t.end()
+        })
       }
     }
   }
