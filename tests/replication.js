@@ -10,7 +10,7 @@ const needle = require('needle')
 const websocket = require('websocket-stream')
 const store = require('mapfilter-db')
 
-const Server = require('../server')
+const Server = require('..')
 
 const tmpdir = path.join(tmp(), 'mapfilter-sync-test-local')
 const tmpdir2 = path.join(tmp(), 'mapfilter-sync-test-server')

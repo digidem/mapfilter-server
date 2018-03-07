@@ -6,7 +6,7 @@ const path = require('path')
 const getport = require('getport')
 const needle = require('needle')
 
-const Server = require('../server')
+const Server = require('..')
 
 const tmpdir = path.join(tmp(), 'mapfilter-sync-test-request')
 rimraf.sync(tmpdir)
