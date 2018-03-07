@@ -1,4 +1,5 @@
 var http = require('http')
+var pump = require('pump')
 var eos = require('end-of-stream')
 var wsock = require('websocket-stream')
 var Store = require('mapfilter-db')
@@ -32,44 +33,24 @@ module.exports = function (osmdir) {
       console.log('NET REPLICATION: already replicating')
       return
     }
-    var pending = 2
-    console.log('NET REPLICATION: starting')
-    replicating = true
-    src.on('error', syncErr)
-    socket.on('error', syncErr)
-    socket.pipe(src).pipe(socket)
-    eos(src, onend)
-    eos(socket, onend)
-    function onend () {
-      if (!--pending) {
-        console.log('NET REPLICATION: done')
-        replicating = false
-        store.osm.ready(function () {
-          console.log('NET REPLICATION: indexes caught up')
-        })
-      }
-    }
+    pump(src, socket, src, function (err) {
+      replicating = false
+      if (err) console.log('Net REPLICATION', err)
+      else console.log('NET REPLICATION: done')
+      store.osm.ready(function () {
+        console.log('NET REPLICATION: indexes caught up')
+      })
+    })
   }
 
   function replicateMedia (socket) {
     console.log('MEDIA REPLICATION: starting')
+    replicating = true
     var src = store.createMediaReplicationStream()
-    src.on('error', syncErr)
-    socket.on('error', syncErr)
-    src.pipe(socket).pipe(src)
-    src.on('end', onDone)
-    socket.on('end', onDone)
-
-    var pending = 2
-    function onDone () {
-      if (!--pending) {
-        console.log('MEDIA REPLICATION: done')
-      }
-    }
-  }
-
-  function syncErr (err) {
-    replicating = false
-    console.log('REPLICATION', err)
+    pump(src, socket, src, function (err) {
+      replicating = false
+      if (err) console.log('REPLICATION', err)
+      else console.log('MEDIA REPLICATION: done')
+    })
   }
 }
