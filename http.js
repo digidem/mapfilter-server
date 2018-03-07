@@ -3,6 +3,7 @@ var mime = require('mime')
 var JSONStream = require('JSONStream')
 var ndjson = require('ndjson')
 var xtend = require('xtend')
+var values = require('object.values')
 var router = require('routes')()
 var pump = require('pump')
 
@@ -45,7 +46,7 @@ router.addRoute('GET /obs/:id', function (req, res, m) {
       res.statusCode = 500
       res.end(err)
     }
-    res.end(JSON.stringify(Object.values(result)))
+    res.end(JSON.stringify(values(result)))
   })
 })
 
