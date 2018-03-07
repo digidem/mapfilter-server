@@ -110,40 +110,8 @@ test('websocket osm replication', function (t) {
       server.store.osm.get(id, function (err, docs) {
         t.error(err)
         t.same(docs[node.key], node.value.v)
-        t.end()
+        cleanup(t)
       })
     }
   }
-})
-
-test('list observations with http', function (t) {
-  needle.get(`http://localhost:${port}/obs/list`, function (error, response) {
-    t.error(error)
-    t.same(response.statusCode, 200)
-    var obs = JSON.parse(response.body.toString())
-    t.same(obs.length, 2)
-    for (var i = 0; i < obs.length; obs++) {
-      var o = obs[i]
-      t.same(o.type, 'observation')
-      t.same(o.tags, {})
-    }
-    t.end()
-  })
-})
-
-test('create observation with http', function (t) {
-  var observation = {
-    type: 'observation',
-    tags: EXAMPLES[0]
-  }
-  needle.request('post', `http://localhost:${port}/obs/create`, observation, {json: true}, function (error, response) {
-    t.error(error)
-    t.same(response.statusCode, 200)
-    var result = response.body.toString()
-    server.store.osm.get(result, function (err, docs) {
-      t.error(err)
-      t.ok(docs)
-      cleanup(t)
-    })
-  })
 })
