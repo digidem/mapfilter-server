@@ -3,7 +3,6 @@ var path = require('path')
 var MapfilterDb = require('mapfilter-db')
 
 var Api = require('./src/api')
-var Router = require('./src/router')
 
 function MapFilter (osmdir) {
   if (!osmdir) {

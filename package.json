@@ -3,6 +3,9 @@
   "version": "2.0.1",
   "description": "Server for viewing mapfilter data over HTTP and replication via websockets.",
   "main": "index.js",
+  "bin": {
+    "mapfilter-server": "./bin/cli.js"
+  },
   "scripts": {
     "test": "tape tests/*.js | tap-spec",
     "start": "node bin/cli.js db"
