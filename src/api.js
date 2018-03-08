@@ -1,5 +1,6 @@
 var body = require('body/json')
 var mime = require('mime')
+var through = require('through2')
 var JSONStream = require('JSONStream')
 var ndjson = require('ndjson')
 var xtend = require('xtend')
@@ -48,10 +49,15 @@ API.prototype.observationCreate = function (req, res, m) {
   })
 }
 
+var _public = through.obj(function (obs, enc, next) {
+  if (obs.tags.public) return next(null, obs)
+  else return next()
+})
+
 API.prototype.observationList = function (req, res, m) {
   if (m.stream) parser = ndjson.stringify()
   else parser = JSONStream.stringify()
-  pump(this.db.observationStream(), parser, res, done)
+  pump(this.db.observationStream(), _public, parser, res, done)
   function done (err) {
     if (err) {
       res.statusCode = 500
