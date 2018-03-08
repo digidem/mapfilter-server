@@ -1,6 +1,6 @@
 {
   "name": "mapfilter-server",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "Server for viewing mapfilter data over HTTP and replication via websockets.",
   "main": "index.js",
   "scripts": {
