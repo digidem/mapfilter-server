@@ -1,5 +1,5 @@
 var path = require('path')
-var Server = require('./server')
+var Server = require('../server')
 
 var osmdir = process.argv[2]
 if (!osmdir) {
