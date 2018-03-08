@@ -10,7 +10,7 @@ const needle = require('needle')
 const websocket = require('websocket-stream')
 const store = require('mapfilter-db')
 
-const Server = require('..')
+const MapFilterServer = require('../server')
 
 const tmpdir = path.join(tmp(), 'mapfilter-sync-test-local')
 const tmpdir2 = path.join(tmp(), 'mapfilter-sync-test-server')
@@ -23,7 +23,7 @@ var EXAMPLES = [
 ]
 
 var s1 = store(tmpdir)
-var server = Server(tmpdir2)
+var server = MapFilterServer(tmpdir2)
 
 var port = null
 getport(function (e, p) {
@@ -113,7 +113,7 @@ test('websocket osm replication', function (t) {
     pump(r1, ws, r1, done)
 
     function done () {
-      server.store.osm.get(id, function (err, docs) {
+      server.db.osm.get(id, function (err, docs) {
         t.error(err)
         t.same(docs[node.key], node.value.v)
         cleanup(t)

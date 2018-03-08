@@ -3,17 +3,17 @@ var debug = require('debug')('mapfilter-server')
 
 module.exports = Replicator
 
-function Replicator (store) {
-  if (!(this instanceof Replicator)) return new Replicator(store)
-  this.store = store
+function Replicator (db) {
+  if (!(this instanceof Replicator)) return new Replicator(db)
+  this.db = db
   this.replicating = false
 }
 
 Replicator.prototype.osm = function (socket) {
   var self = this
-  var src = this.store.createOsmReplicationStream()
+  var src = this.db.createOsmReplicationStream()
   this._replicate(src, socket, function (err) {
-    self.store.osm.ready(function () {
+    self.db.osm.ready(function () {
       debug('OSM REPLICATION: indexes caught up')
     })
   })
@@ -21,7 +21,7 @@ Replicator.prototype.osm = function (socket) {
 
 Replicator.prototype.media = function (socket) {
   debug('MEDIA REPLICATION: starting')
-  var src = this.store.createMediaReplicationStream()
+  var src = this.db.createMediaReplicationStream()
   this._replicate(src, socket)
 }
 

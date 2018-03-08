@@ -6,12 +6,12 @@ const path = require('path')
 const getport = require('getport')
 const needle = require('needle')
 
-const Server = require('..')
+const MapFilterServer = require('../server')
 
 const tmpdir = path.join(tmp(), 'mapfilter-sync-test-request')
 rimraf.sync(tmpdir)
 
-var server = Server(tmpdir)
+var server = MapFilterServer(tmpdir)
 
 function cleanup (t) {
   server.close(function () {
@@ -39,7 +39,7 @@ server.listen(port, function () {
       t.error(error)
       t.same(response.statusCode, 200)
       var result = response.body.toString()
-      server.store.osm.get(result, function (err, docs) {
+      server.db.osm.get(result, function (err, docs) {
         t.error(err)
         t.ok(docs)
         t.end()
@@ -76,7 +76,7 @@ server.listen(port, function () {
   })
 
   test('get media with http', function (t) {
-    var ws = server.store.media.createWriteStream('hello.txt')
+    var ws = server.db.media.createWriteStream('hello.txt')
     ws.on('error', function () {
       t.error(err)
     })
