@@ -16,7 +16,7 @@ $ mapfilter-server /path/to/somewhere/safe
 
 If you just want to take our defaults, mapfilter-server carries a built-in server that you can use in Node.js like so:
 
-``
+```
 npm install mapfilter-server
 ```
 
