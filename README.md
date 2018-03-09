@@ -25,14 +25,23 @@ npm install mapfilter-server
 
 ```js
 var MapFilter = require('mapfilter-server')
+var config = require('./config.json')
 
-var server = MapFilter.createServer('/path/to/my/osm/data')
+var server = MapFilter.createServer('/path/to/my/osm/data', config)
 
 server.listen(8008, function () {
   console.log('listening')
 })
 ```
 
+## Config File
+
+The config file should be a JSON file. 
+
+Options:
+  * `domains`: Optional. Array of domains that are allowed to make Cross-Domain requests. 
+
+## Replicating to mapfilter-server from a client
 
 From a client, you can then replicate to the server from your local `mapfilter-db` via websocket-stream:
 
@@ -89,9 +98,3 @@ wsock.createServer({
 })
 ```
 
-## Config File
-
-The config file should be a JSON file. 
-
-Options:
-  * `domains`: Optional. Array of domains that are allowed to make Cross-Domain requests. 
