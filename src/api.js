@@ -1,5 +1,6 @@
 var body = require('body/json')
 var mime = require('mime')
+var through = require('through2')
 var JSONStream = require('JSONStream')
 var ndjson = require('ndjson')
 var xtend = require('xtend')
@@ -81,5 +82,17 @@ API.prototype.observationGet = function (req, res, m) {
     }
     res.setHeader('content-type', 'application/json')
     res.end(JSON.stringify(values(result)))
+  })
+}
+
+API.prototype.asFeatureCollection = function (req, res, m) {
+  var stream = this.db.observationStream({features: true})
+
+  var open = '{"type": "FeatureCollection","features":[\n'
+  var sep = '\n,\n'
+  var close = '\n]}\n'
+  var toFeatureCollection = JSONStream.stringify(open, sep, close)
+  pump(stream, toFeatureCollection, res, function (err) {
+    if (err) return res.end(err)
   })
 }

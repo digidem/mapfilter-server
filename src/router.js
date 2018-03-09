@@ -6,6 +6,8 @@ module.exports = function (api) {
   router.addRoute('POST /obs/create', api.observationCreate.bind(api))
   router.addRoute('GET /obs/list', api.observationList.bind(api))
   router.addRoute('GET /media/list', api.mediaList.bind(api))
+  router.addRoute('GET /features/list', api.asFeatureCollection.bind(api))
+
   router.addRoute('GET /obs/:id', api.observationGet.bind(api))
   router.addRoute('GET /media/:filename', api.mediaGet.bind(api))
 
