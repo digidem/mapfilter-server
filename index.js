@@ -15,3 +15,4 @@ function MapFilter (osmdir) {
 }
 
 module.exports = MapFilter
+module.exports.createServer = require('./server.js')

@@ -2,7 +2,7 @@
 var path = require('path')
 var fs = require('fs')
 
-var Server = require('../server')
+var MF = require('..')
 
 var osmdir = process.argv[2]
 var configPath = process.argv[3] || path.join(process.cwd(), 'config.json')
@@ -20,7 +20,7 @@ if (!osmdir) {
   process.exit(1)
 }
 
-var server = Server(osmdir, config)
+var server = MF.createServer(osmdir, config)
 
 server.listen(3210, function () {
   console.log('http://localhost:3210')
