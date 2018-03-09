@@ -9,8 +9,11 @@ Server for viewing mapfilter data over HTTP and replication via websockets.
 
 ```
 $ npm install -g mapfilter-server
-$ mapfilter-server /path/to/somewhere/safe
+$ mapfilter-server <db> [config]
 ```
+
+  * `db`: required. The path to the database folder. If it doesn't exist, mapfilter-server will create it.
+  * `config`: optional. The path to a config file.
 
 ## Simple Usage
 
@@ -29,6 +32,7 @@ server.listen(8008, function () {
   console.log('listening')
 })
 ```
+
 
 From a client, you can then replicate to the server from your local `mapfilter-db` via websocket-stream:
 
@@ -84,3 +88,10 @@ wsock.createServer({
   else stream.destroy(request.url + ' does not match')
 })
 ```
+
+## Config File
+
+The config file should be a JSON file. 
+
+Options:
+  * `domains`: Optional. Array of domains that are allowed to make Cross-Domain requests. 

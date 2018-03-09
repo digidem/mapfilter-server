@@ -1,6 +1,7 @@
 var Router = require('routes')
 
-module.exports = function (api) {
+module.exports = function (api, config) {
+  if (!config) config = {}
   var router = Router()
 
   router.addRoute('POST /obs/create', api.observationCreate.bind(api))
@@ -12,6 +13,13 @@ module.exports = function (api) {
   router.addRoute('GET /media/:filename', api.mediaGet.bind(api))
 
   return function (req, res) {
+    if (config.domains) {
+      config.domains.forEach(function (domain) {
+        res.setHeader('Access-Control-Allow-Origin', domain);
+      })
+      res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    }
     var m = router.match(req.method + ' ' + req.url)
     if (m) {
       m.fn(req, res, m.params)

@@ -6,9 +6,10 @@ var MapFilter = require('.')
 var router = require('./src/router')
 var replicator = require('./src/replicate')
 
-module.exports = function (osmdir) {
+module.exports = function (osmdir, config) {
+  if (!config) config = {}
   var api = MapFilter(osmdir)
-  var server = http.createServer(router(api))
+  var server = http.createServer(router(api, config))
   server.db = api.db
   wsock.createServer({ server: server , perMessageDeflate: false }, function (socket, request) {
     if (request.url.match(/osm/)) api.replicator.osm(socket)
